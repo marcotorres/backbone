@@ -2,17 +2,13 @@
 
 namespace App\Models;
 
-use App\Traits\StringManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class ZipCode extends Model
 {
-    use StringManager;
-
     protected $table = 'zip_codes';
 
     protected $primaryKey = 'zip_code';
@@ -78,32 +74,12 @@ class ZipCode extends Model
     }
 
     /**
-     * zipCodeSettlements
+     * settlements
      * @author Marco Torres, <mtorresa@uni.pe>
      * @return HasMany
      */
-    public function zipCodeSettlements(): HasMany
+    public function settlements(): HasMany
     {
-        return $this->hasMany(ZipCodeSettlement::class, 'zip_code_key');
-    }
-
-    /**
-     * settlements
-     * @author Marco Torres, <mtorresa@uni.pe>
-     * @return BelongsToMany
-     */
-    public function settlements(): BelongsToMany
-    {
-        return $this->belongsToMany(Settlement::class, ZipCodeSettlement::class, 'zip_code_key', 'settlement_key')->with('settlementType');
-    }
-
-    /**
-     * @return Attribute
-     */
-    protected function locality(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => $this->removeAccents($value),
-        );
+        return $this->hasMany(Settlement::class, 'zip_code_key')->with('settlementType');
     }
 }

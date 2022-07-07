@@ -8,7 +8,7 @@ trait StringManager
      * @param $string
      * @return array|string|string[]
      */
-    public function removeAccents($string)
+    public function removeAccentsStrToUpper($string)
     {
         //$string = utf8_encode($string);
 

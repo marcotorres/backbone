@@ -7,13 +7,15 @@ use App\Models\Municipality;
 use App\Models\Settlement;
 use App\Models\SettlementType;
 use App\Models\ZipCode;
-use App\Models\ZipCodeSettlement;
+use App\Traits\StringManager;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Exception;
 
 class PopulateZipCodesCommand extends Command
 {
+    use StringManager;
+
     /**
      * The name and signature of the console command.
      *
@@ -64,20 +66,6 @@ class PopulateZipCodesCommand extends Command
                         ]);
                     }
 
-                    // settlements
-                    $settlementKey = (int) $table->id_asenta_cpcons;
-                    $settlementName = (string) $table->d_asenta;
-                    $settlementZoneType = (string) $table->d_zona;
-
-                    if (!Settlement::query()->where('key', $settlementKey)->exists()) {
-                        Settlement::query()->create([
-                            'key' => $settlementKey,
-                            'name' => $settlementName,
-                            'zone_type' => $settlementZoneType,
-                            'settlement_type_key' => $settlementTypeKey
-                        ]);
-                    }
-
                     // municipalities
                     $municipalityKey = (int) $table->c_mnpio;
                     $municipalityName = (string) $table->D_mnpio;
@@ -85,7 +73,7 @@ class PopulateZipCodesCommand extends Command
                     if (!Municipality::query()->where('key', $municipalityKey)->exists()) {
                         Municipality::query()->create([
                             'key' => $municipalityKey,
-                            'name' => $municipalityName,
+                            'name' => $this->removeAccentsStrToUpper($municipalityName),
                         ]);
                     }
 
@@ -94,11 +82,10 @@ class PopulateZipCodesCommand extends Command
                     $federalEntityName = (string) $table->d_estado;
                     $federalEntityCode = (string) $table->c_CP;
 
-
                     if (!FederalEntity::query()->where('key', $federalEntityKey)->exists()) {
                         FederalEntity::query()->create([
                             'key' => $federalEntityKey,
-                            'name' => $federalEntityName,
+                            'name' => $this->removeAccentsStrToUpper($federalEntityName),
                             'code' => $federalEntityCode
                         ]);
                     }
@@ -110,22 +97,24 @@ class PopulateZipCodesCommand extends Command
                     if (!ZipCode::query()->where('zip_code', $zipCodeKey)->exists()) {
                         ZipCode::query()->create([
                             'zip_code' => $zipCodeKey,
-                            'locality' => $zipCodeLocality,
+                            'locality' => $this->removeAccentsStrToUpper($zipCodeLocality),
                             'federal_entity_key' => $federalEntityKey,
                             'municipality_key' => $municipalityKey
                         ]);
                     }
 
-                    // zip_code_settlements
-                    $zipCodeSettlementQuery = ZipCodeSettlement::query()->where([
-                        ['zip_code_key', '=', $zipCodeKey],
-                        ['settlement_key', '=', $settlementKey]
-                    ]);
+                    // settlements
+                    $settlementKey = (int) $table->id_asenta_cpcons;
+                    $settlementName = (string) $table->d_asenta;
+                    $settlementZoneType = (string) $table->d_zona;
 
-                    if (!$zipCodeSettlementQuery->exists()) {
-                        ZipCodeSettlement::query()->create([
+                    if (!Settlement::query()->where([['key', '=', $settlementKey], ['zip_code_key', '=', $zipCodeKey]])->exists()) {
+                        Settlement::query()->create([
+                            'key' => $settlementKey,
+                            'name' => $this->removeAccentsStrToUpper($settlementName),
+                            'zone_type' => $this->removeAccentsStrToUpper($settlementZoneType),
+                            'settlement_type_key' => $settlementTypeKey,
                             'zip_code_key' => $zipCodeKey,
-                            'settlement_key' => $settlementKey
                         ]);
                     }
 
