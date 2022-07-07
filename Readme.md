@@ -36,7 +36,23 @@ El proyecto se ha construido en base a Laravel 9.x, localmente el desarrollo se 
 - **make setup_project**: configuración inicial del proyecto (solo se debe de ejecutar una vez)
 - **make phpcs**: para el análisis de código con PHP_CodeSniffer (PHPCS)
 - **make qa**: para el análisis de código con PHPLINT, PHPCS y PHPSTAN
+- **make key**: genera la clave de la aplicación
+- **make migrate**: ejecuta la migración de estructura de base de datos
+- **make populate**: migra los datos del xml a la base de datos
 
 Los ambientes del proyecto son:
 
 - Local: http://api.backbone.localhost
+- Develop: https://api.backbone.marcotorres.pe
+
+## Migración de estructura de base de datos
+
+Para crear las tablas executa:
+
+    make migrate
+
+## Popular datos de código postal
+
+Ejecuta:
+
+    make populate

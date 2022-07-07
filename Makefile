@@ -73,3 +73,15 @@ qa: ## Analize the code for QAS
 	@docker-compose exec app sh -c "php -d memory_limit=1G vendor/bin/phpcs --standard=phpcs-laravel  --ignore='vendor,phpstan_tmp,resources,storage,tests' --extensions=php --ignore-annotations  --encoding=utf-8 -n -p ."
 	@echo "Analizing code...with PHPSTAN:"
 	@docker-compose exec app sh -c "php -d memory_limit=1G vendor/bin/phpstan analyze app"
+
+key:  ## Key generate for application
+	@echo "Key generate for application"
+	@docker-compose exec app sh -c "php artisan key:generate"
+
+migrate:  ## Migrate structure database for application
+	@echo "Migrate structure database for application"
+	@docker-compose exec app sh -c "php artisan migrate"
+
+populate:  ## Populate data zipcodes in to database for application
+	@echo "Populate data zipcodes in to database for application"
+	@docker-compose exec app sh -c "php artisan backbone:populate-zip-codes"
