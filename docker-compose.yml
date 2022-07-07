@@ -30,7 +30,7 @@ services:
       - "80"
     volumes:
       - ${PWD}/src:/app:delegated
-      - ${PWD}/docker/supervisor/backbone/db-sync-postal-code.conf:/etc/supervisor.d/db-sync-postal-code.conf
+      - ${PWD}/docker/supervisor/backbone/db-sync-zip-codes.conf:/etc/supervisor.d/db-sync-zip-codes.conf
     environment:
       - WEB_DOCUMENT_ROOT=/app/public
       - VIRTUAL_HOST=api.backbone.localhost

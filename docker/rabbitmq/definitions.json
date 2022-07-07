@@ -1,7 +1,7 @@
 {
   "queues": [
     {
-      "name": "db-sync-postal-code",
+      "name": "db-sync-zip-codes",
       "vhost": "/",
       "durable": true,
       "auto_delete": false,

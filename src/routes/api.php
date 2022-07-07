@@ -1,7 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\App;
+use App\Http\Controllers\ZipCode;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +16,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/', function () {
+    return new JsonResponse([
+        'app' => 'Api BackBone ' . config('backbone.api_version'),
+        'env' => App::environment(),
+    ]);
+})->name('api.get.home');
+
+Route::get('zip-codes/{zipcode}', [ZipCode\ZipCodeController::class, 'show']);
+
+

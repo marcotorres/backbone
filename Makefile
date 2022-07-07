@@ -21,11 +21,11 @@ stop:  ## Stop the application
 
 clean:  ## Clean the application for Cache and Configurations
 	@echo "Cleaning cache, views and configuration compiled the application"
-	@docker-compose exec pse sh -c "php artisan view:clear && php artisan cache:clear"
+	@docker-compose exec app sh -c "php artisan view:clear && php artisan cache:clear"
 
 optimize:  ## Clean the all application
 	@echo "Cleaning all configuration compiled the application"
-	@docker-compose exec pse sh -c "php artisan optimize"
+	@docker-compose exec app sh -c "php artisan optimize"
 
 status:  ## Status the application
 	@echo "Status the application"
@@ -37,7 +37,7 @@ logs:	## Show the all Logs from the application
 
 cli: ## Enter to container console from Laravel
 	@echo "Enter to container console from Laravel"
-	@docker-compose exec pse sh
+	@docker-compose exec app sh
 
 cli_db: ## Enter to DB container
 	@echo "Enter to DB container"
@@ -64,12 +64,12 @@ setup_project:	## Set configuration for development in the project
 
 phpcs:  ## Analize the code with PHPCS
 	@echo "Analizing code..."
-	@docker-compose exec pse sh -c "php vendor/bin/phpcs --standard=phpcs-laravel  --ignore='*/resources/*,*/public*,*/vendor/*'  --encoding=utf-8 -n -p ."
+	@docker-compose exec app sh -c "php vendor/bin/phpcs --standard=phpcs-laravel  --ignore='*/resources/*,*/public*,*/vendor/*'  --encoding=utf-8 -n -p ."
 
 qa: ## Analize the code for QAS
 	@echo "Analizing code...with PHPLINT:"
-	@docker exec -ti backbone_app sh -c "vendor/bin/phplint"
+	@docker-compose exec app sh -c "vendor/bin/phplint"
 	@echo "Analizing code...with PHPCS:"
-	@docker exec -ti backbone_app sh -c "php -d memory_limit=1G vendor/bin/phpcs --standard=phpcs-laravel  --ignore='vendor,phpstan_tmp,resources,storage,tests' --extensions=php --ignore-annotations  --encoding=utf-8 -n -p ."
+	@docker-compose exec app sh -c "php -d memory_limit=1G vendor/bin/phpcs --standard=phpcs-laravel  --ignore='vendor,phpstan_tmp,resources,storage,tests' --extensions=php --ignore-annotations  --encoding=utf-8 -n -p ."
 	@echo "Analizing code...with PHPSTAN:"
-	@docker exec -ti backbone_app sh -c "php -d memory_limit=1G vendor/bin/phpstan analyze app"
+	@docker-compose exec app sh -c "php -d memory_limit=1G vendor/bin/phpstan analyze app"
