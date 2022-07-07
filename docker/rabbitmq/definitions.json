@@ -1,0 +1,13 @@
+{
+  "queues": [
+    {
+      "name": "db-sync-postal-code",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+version: '3.8'
+
+networks:
+  backbone_vlan:
+    name: backbone_vlan
+
+volumes:
+  backbone_vol_mysql:
+
+services:
+  proxy:
+    image: nginx
+    container_name: backbone_proxy
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ${PWD}/docker/nginx/conf.d:/etc/nginx/conf.d
+      - ${PWD}/docker/nginx/nginxapi.conf:/etc/nginx/nginx.conf
+    networks:
+      - backbone_vlan
+
+  app:
+    #image: webdevops/php-nginx:8.1 # for production
+    image: webdevops/php-nginx:8.1-alpine
+    container_name: backbone_app
+    working_dir: /app
+    restart: on-failure
+    expose:
+      - "80"
+    volumes:
+      - ${PWD}/src:/app:delegated
+      - ${PWD}/docker/supervisor/backbone/db-sync-postal-code.conf:/etc/supervisor.d/db-sync-postal-code.conf
+    environment:
+      - WEB_DOCUMENT_ROOT=/app/public
+      - VIRTUAL_HOST=api.backbone.localhost
+    networks:
+      - backbone_vlan
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: backbone_queue
+    hostname: queue_server
+    restart: on-failure
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ${PWD}/docker/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+      - ${PWD}/docker/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    networks:
+      - backbone_vlan
+
+  mysql:
+    image: mysql:8.0.25
+    container_name: backbone_mysql
+    restart: on-failure
+    volumes:
+      - ${PWD}/data:/app:rw
+      - backbone_vol_mysql:/var/lib/mysql
+    working_dir: /app
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DB_NAME}
+      MYSQL_USER: ${MYSQL_USER_NAME}
+      MYSQL_PASSWORD: ${MYSQL_USER_PWD}
+    ports:
+      - "3306:3306"
+    networks:
+      - backbone_vlan
+
+  redis:
+    image: redis:alpine
+    container_name: backbone_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - backbone_vlan
