@@ -56,3 +56,7 @@ Para crear las tablas executa:
 Ejecuta:
 
     make populate
+
+## Nota:
+
+El proyecto se puede optimizar generando el cache con redis, habilitando PHP APC; en algunos casos específicos pero que no ameritan en este problema, se puede utilizar una gestión de colas con RabbitMQ.
