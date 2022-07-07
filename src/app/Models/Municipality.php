@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\StringManager;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Municipality extends Model
 {
+    use StringManager;
+
     protected $table = 'municipalities';
 
     protected $primaryKey = 'key';
@@ -37,7 +40,7 @@ class Municipality extends Model
     protected function name(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => mb_strtoupper($value),
+            get: fn ($value) => $this->removeAccents($value),
         );
     }
 }

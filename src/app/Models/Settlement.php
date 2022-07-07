@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\StringManager;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Settlement extends Model
 {
+    use StringManager;
+
     protected $table = 'settlements';
 
     protected $primaryKey = 'key';
@@ -52,7 +55,7 @@ class Settlement extends Model
     protected function name(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => mb_strtoupper($value),
+            get: fn ($value) => $this->removeAccents($value),
         );
     }
 
@@ -62,7 +65,7 @@ class Settlement extends Model
     protected function zoneType(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => mb_strtoupper($value),
+            get: fn ($value) => $this->removeAccents($value),
         );
     }
 }

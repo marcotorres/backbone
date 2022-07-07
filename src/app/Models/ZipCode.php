@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\StringManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class ZipCode extends Model
 {
+    use StringManager;
+
     protected $table = 'zip_codes';
 
     protected $primaryKey = 'zip_code';
@@ -100,7 +103,7 @@ class ZipCode extends Model
     protected function locality(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => mb_strtoupper($value),
+            get: fn ($value) => $this->removeAccents($value),
         );
     }
 }

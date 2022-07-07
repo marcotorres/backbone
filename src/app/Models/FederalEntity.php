@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\StringManager;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class FederalEntity extends Model
 {
+    use StringManager;
+
     protected $table = 'federal_entities';
 
     protected $primaryKey = 'key';
@@ -38,7 +41,7 @@ class FederalEntity extends Model
     protected function name(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => mb_strtoupper($value),
+            get: fn ($value) => $this->removeAccents($value),
         );
     }
 
@@ -48,7 +51,7 @@ class FederalEntity extends Model
     protected function code(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => ($value) ? mb_strtoupper($value) : null,
+            get: fn ($value) => ($value) ? $this->removeAccents($value) : null,
         );
     }
 }
